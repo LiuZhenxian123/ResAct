@@ -1,0 +1,25 @@
+name: resact
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - pytorch
+  - torchvision
+  - cudatoolkit=11.0
+  - absl-py
+  - pyparsing
+  - pip:
+    - termcolor
+    - dm-control
+    - git+git://github.com/denisyarats/dmc2gym.git
+    - opencv-python
+    - pillow
+    - scikit-image
+    - scikit-video
+    - tb-nightly
+    - tqdm
+    - imageio
+    - imageio-ffmpeg
+    - pygame
+    - networkx
+    - dotmap

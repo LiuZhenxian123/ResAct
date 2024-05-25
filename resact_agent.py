@@ -1,9 +1,3 @@
-# Copyright (c) Facebook, Inc. and its affiliates.weight_init
-# All rights reserved.
-
-# This source code is licensed under the license found in the
-# LICENSE file in the root directory of this source tree.
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -16,8 +10,8 @@ from decoder import make_decoder
 import data_augs as rad
 
 
-class DeepMDPAgent(object):
-    """Baseline algorithm with transition model and various decoder types."""
+class ResActAgent(object):
+    """Implementation of Visual Reinforcement Learning with Residual Action"""
     def __init__(
         self,
         obs_shape,
@@ -181,40 +175,11 @@ class DeepMDPAgent(object):
                 prev_obs,obs,prev_action, compute_pi=False, compute_log_pi=False
             )
             return mu.cpu().data.numpy().flatten()
-    
-    # def select_action_2(self, obs,prev_act,step):
-    #     with torch.no_grad():
-    #         obs = torch.FloatTensor(obs).to(self.device)
-    #         obs = obs.unsqueeze(0)
-    #         mu, _, _, _ = self.actor(
-    #             obs, compute_pi=False, compute_log_pi=False
-    #         )
-    #         #reshape(x,y) 需要根据任务的action space设定 carla(1,2) cheetah(1,6) finger(1,2)
-    #         prev_mu = torch.from_numpy(prev_act).reshape(1,6).to(self.device)
-    #         curr_q1,curr_q2 = self.critic(obs,mu)
-    #         curr_q = min(curr_q1,curr_q2)
-    #         prev_q1,prev_q2 = self.critic(obs,prev_mu)
-    #         prev_q = min(prev_q1,prev_q2)
-    #         if prev_q>curr_q:
-    #             ratio = min(0.3,5000.0/step)
-    #             #ratio = 0.5
-    #             return (prev_mu*ratio+mu*(1-ratio)).cpu().data.numpy().flatten()
-    #         else:
-    #             return mu.cpu().data.numpy().flatten()
 
-
-    def sample_action(self,prev_obs, obs,prev_action):
+    def sample_action(self,prev_obs,obs,prev_action):
         if obs.shape[-1] != self.image_size:
             obs = utils.center_crop_image(obs, self.image_size)
             prev_obs = utils.center_crop_image(prev_obs, self.image_size)
-         # center crop image
-        # if self.encoder_type == 'pixel' and 'crop' in self.data_augs:
-        #     obs = utils.center_crop_image(obs,self.image_size)
-        # if self.encoder_type == 'pixel' and 'translate' in self.data_augs:
-        #     # first crop the center with pre_image_size
-        #     obs = utils.center_crop_image(obs, self.pre_transform_image_size)
-        #     # then translate cropped to center
-        #     obs = utils.center_translate(obs, self.image_size)
         with torch.no_grad():
             prev_obs = torch.FloatTensor(prev_obs).to(self.device)
             obs = torch.FloatTensor(obs).to(self.device)
@@ -222,33 +187,7 @@ class DeepMDPAgent(object):
             obs = obs.unsqueeze(0)
             prev_action = torch.from_numpy(prev_action).reshape(1,-1).to(self.device)
             mu, pi, _, _ = self.actor(prev_obs,obs,prev_action, compute_log_pi=False)
-            # print("pi is:",pi)
-            # print("pi's shape:",pi.shape)
             return pi.cpu().data.numpy().flatten()
-        
-    def sample_action_2(self,prev_obs,obs,prev_act,step):
-        if obs.shape[-1] != self.image_size:
-            obs = utils.center_crop_image(obs, self.image_size)
-            prev_obs = utils.center_crop_image(prev_obs, self.image_size)
-        with torch.no_grad():
-            prev_obs = torch.FloatTensor(prev_obs).to(self.device)
-            obs = torch.FloatTensor(obs).to(self.device)
-            prev_obs = prev_obs.unsqueeze(0)
-            obs = obs.unsqueeze(0)
-            prev_pi = torch.from_numpy(prev_act).reshape(1,-1).to(self.device)
-            mu, pi, _, _ = self.actor(prev_obs,obs,prev_pi,compute_log_pi=False)
-            # reshape(x,y) 需要根据任务的action space设定 carla(1,2) cheetah(1,6) finger(1,2)
-            # prev_pi = torch.from_numpy(prev_act).reshape(1,-1).to(self.device)
-            curr_q1,curr_q2 = self.critic(prev_obs,obs,pi)
-            curr_q = min(curr_q1,curr_q2)
-            prev_q1,prev_q2 = self.critic(prev_obs,obs,prev_pi)
-            prev_q = min(prev_q1,prev_q2)
-            if prev_q>curr_q:
-                ratio = min(0.3,5000.0/step)
-                #ratio = 0.5
-                return (prev_pi*ratio+pi*(1-ratio)).cpu().data.numpy().flatten()
-            else:
-                return pi.cpu().data.numpy().flatten()
 
     def update_critic(self, prev_obs,obs, action,reward, next_obs, not_done, L, step):
         with torch.no_grad():
