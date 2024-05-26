@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument('--replay_buffer_capacity', default=100000, type=int)
     # train
     parser.add_argument('--agent', default='resact', type=str, choices=['resact'])
-    parser.add_argument('--init_steps', default=10000, type=int)
+    parser.add_argument('--init_steps', default=1000, type=int)
     parser.add_argument('--num_train_steps', default=100000, type=int)
     parser.add_argument('--batch_size', default=128, type=int)
     parser.add_argument('--hidden_dim', default=1024, type=int)
