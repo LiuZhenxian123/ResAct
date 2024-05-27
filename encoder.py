@@ -131,6 +131,11 @@ class PixelEncoderCarla096(PixelEncoder):
         for i in range(num_layers - 1):
             self.convs.append(nn.Conv2d(num_filters, num_filters, 3, stride=stride))
 
+        self.prev_convs = nn.ModuleList(
+            [nn.Conv2d(obs_shape[0], num_filters, 3, stride=2)]
+        )
+        for i in range(num_layers - 1):
+            self.prev_convs.append(nn.Conv2d(num_filters, num_filters, 3, stride=stride))
         out_dims = 100  # if defaults change, adjust this as needed
         self.fc = nn.Linear(num_filters * out_dims, self.feature_dim)
         self.ln = nn.LayerNorm(self.feature_dim)

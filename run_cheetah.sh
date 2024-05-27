@@ -1,7 +1,7 @@
 DOMAIN_NAME=cheetah
 TASK_NAME=run
 AGENT=resact
-SEED=1
+SEED=12
 
 SAVEDIR=./log-${DOMAIN_NAME}-${TASK_NAME}-${AGENT}-seed${SEED}
 mkdir -p ${SAVEDIR}
@@ -13,7 +13,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py \
     --encoder_type pixel \
     --decoder_type identity \
     --init_steps 10000 \
-    --num_train_steps 1000000 \
+    --num_train_steps 200000 \
     --batch_size 128 \
     --replay_buffer_capacity 100000 \
     --num_filters 32 \

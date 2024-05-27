@@ -3,15 +3,13 @@ channels:
   - defaults
 dependencies:
   - python=3.8
-  - pytorch
-  - torchvision
   - cudatoolkit=11.0
   - absl-py
   - pyparsing
   - pip:
     - termcolor
     - dm-control
-    - git+git://github.com/denisyarats/dmc2gym.git
+    - git+https://github.com/denisyarats/dmc2gym.git
     - opencv-python
     - pillow
     - scikit-image
@@ -23,3 +21,7 @@ dependencies:
     - pygame
     - networkx
     - dotmap
+    - torch==1.7.1+cu110
+    - torchvision==0.8.2+cu110
+    - torchaudio==0.7.2
+    - gym==0.17.3
