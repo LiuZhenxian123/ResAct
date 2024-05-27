@@ -314,6 +314,7 @@ def main():
     assert env.action_space.low.min() >= -1
     assert env.action_space.high.max() <= 1
 
+    obs_shape = env.observation_space.shape
     if args.encoder_type == 'pixel':
         obs_shape = (3*args.frame_stack, args.image_size, args.image_size)
         pre_aug_obs_shape = (3*args.frame_stack,pre_transform_image_size,pre_transform_image_size)
